@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+scikit-learn
+geopy
+gmplot
+ortools
+pyomo
+python-dotenv
+openpyxl
