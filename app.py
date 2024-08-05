@@ -15,16 +15,40 @@ google_maps_api_key = os.getenv("GOOGLE_MAPS_API_KEY")
 
 # Sidebar for navigation
 st.sidebar.title("Delivery Partner Dashboard")
-selection = st.sidebar.selectbox("Select Feature", ["Login", "Navigation", "GPS Tracking", "Route Optimization", "Data Analytics", "Interactive Maps", "Landing Page"])
+selection = st.sidebar.selectbox("Select Feature", ["Login", "Register", "Navigation", "GPS Tracking", "Route Optimization", "Data Analytics", "Interactive Maps", "Landing Page"])
+
+# In-memory user store
+users = {}
+
+def save_user(username, password):
+    users[username] = password
+
+def authenticate_user(username, password):
+    return username in users and users[username] == password
 
 if selection == "Login":
     st.title("Delivery Partner Login")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        st.write("Logged in as", username)
+        if authenticate_user(username, password):
+            st.write("Logged in as", username)
+        else:
+            st.write("Invalid username or password")
+
+elif selection == "Register":
+    st.title("Delivery Partner Register")
+    new_username = st.text_input("New Username")
+    new_password = st.text_input("New Password", type="password")
+    confirm_password = st.text_input("Confirm Password", type="password")
     if st.button("Register"):
-        st.write("Registered successfully")
+        if new_password != confirm_password:
+            st.write("Passwords do not match")
+        elif new_username in users:
+            st.write("Username already exists")
+        else:
+            save_user(new_username, new_password)
+            st.write("Registered successfully")
 
 elif selection == "Navigation":
     st.title("Navigation")
@@ -297,3 +321,4 @@ elif selection == "Landing Page":
 
         if st.button("Generate Routes"):
             render_cluster_maps(df_locations)
+
